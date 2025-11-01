@@ -12,9 +12,11 @@ from ultralytics import YOLO
 # =========================
 # CONFIG
 # =========================
-MODEL_PATH = r"D:\DS_Himanshu_Files\DATA SCIENCE\Jupyter_Notebook\Helmet detection-\Helmet detection\model\best.pt"
-UPLOAD_DIR = os.path.join("app/uploads")
-RESULTS_DIR = os.path.join("app/results")
+# ⚠️ Update this path to your actual model location
+MODEL_PATH = r"D:\DS_Himanshu_Files\DATA SCIENCE\Jupyter_Notebook\Helmet detection-\Helmet detection\app\model\best.pt"
+
+UPLOAD_DIR = os.path.join("app", "uploads")
+RESULTS_DIR = os.path.join("app", "results")
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -27,7 +29,7 @@ app = FastAPI(title="Helmet Detection API", description="YOLOv8 REST API for hel
 try:
     model = YOLO(MODEL_PATH)
 except Exception as e:
-    raise RuntimeError(f" Could not load YOLO model from {MODEL_PATH}. Error: {e}")
+    raise RuntimeError(f"Could not load YOLO model from {MODEL_PATH}. Error: {e}")
 
 
 # =========================
@@ -44,7 +46,7 @@ class PredictionResponse(BaseModel):
 # =========================
 @app.get("/")
 async def root():
-    return {"message": " Helmet Detection API is running! Visit /docs for Swagger UI."}
+    return {"message": "Helmet Detection API is running! Visit /docs for Swagger UI."}
 
 
 # =========================
@@ -95,6 +97,7 @@ async def predict(file: UploadFile = File(...)):
         result_url=f"http://127.0.0.1:8000/download/{result_filename}"
     )
 
+
 # =========================
 # DOWNLOAD ENDPOINT
 # =========================
@@ -104,3 +107,12 @@ async def download_result(image_name: str):
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="Result not found")
     return FileResponse(path, media_type="image/jpeg", filename=image_name)
+
+
+# =========================
+# MAIN ENTRY POINT (for local + Render)
+# =========================
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))  # Render provides PORT automatically
+    uvicorn.run("app:app", host="0.0.0.0", port=port)
