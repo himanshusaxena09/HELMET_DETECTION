@@ -12,11 +12,13 @@ from ultralytics import YOLO
 # =========================
 # CONFIG
 # =========================
-# ⚠️ Update this path to your actual model location
-MODEL_PATH = r"D:\DS_Himanshu_Files\DATA SCIENCE\Jupyter_Notebook\Helmet detection-\Helmet detection\app\model\best.pt"
 
-UPLOAD_DIR = os.path.join("app", "uploads")
-RESULTS_DIR = os.path.join("app", "results")
+# ✅ Automatically detect model path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model", "best.pt")
+
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+RESULTS_DIR = os.path.join(BASE_DIR, "results")
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -110,7 +112,7 @@ async def download_result(image_name: str):
 
 
 # =========================
-# MAIN ENTRY POINT (for local + Render)
+# MAIN ENTRY POINT (Local + Render)
 # =========================
 if __name__ == "__main__":
     import uvicorn
